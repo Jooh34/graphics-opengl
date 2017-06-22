@@ -42,7 +42,7 @@ public:
   void draw();
   float getDistance(jhm::position x);
   jhm::position addPos(jhm::position a, jhm::position b);
-  bool hasIntersection(jhm::position ori, jhm::vector dir, jhm::position &intersection);
+  bool hasIntersection(jhm::position ori, jhm::vector dir, jhm::position &intersection, jhm::vector &pv);
 };
 
 #endif

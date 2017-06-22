@@ -17,6 +17,8 @@
 #include "Polygon.h"
 #include "Model.h"
 #include "Texture.h"
+#include "Model.h"
+#include "ObjParser.h"
 
 using namespace std;
 
@@ -31,11 +33,11 @@ jhm::position lightPosition = jhm::position(0.0f, 200.0f, 400.0f);
 // variables for image
 //---------------------
 
-int MAX_DEPTH = 10;
-float zoom = 20;
+int MAX_DEPTH = 5;
+float zoom = 12;
 
-int w = 1920;
-int h = 1080;
+int w = 1280;
+int h = 720;
 
 jhm::position eye(0.0f, 0.0f, 1500.0f);
 jhm::position ori(0.0f, 0.0f, 0.0f);
@@ -57,20 +59,22 @@ void drawWall(float size) {
 	jhm::position p7(size, -height, size);
 	jhm::position p8(size, height, size);
 
+	Texture* wood = new Texture("wood.bmp");
+
 	objects.push_back(new Polygon(
 		p1,p2,p3,
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		7, 0, 0, 1
+		40, 0, 0, 1, wood
 	));
 
 	objects.push_back(new Polygon(
-		p1,p3,p4,
+		p1,p4,p3,
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		7, 0, 0, 1
+		40, 0, 0, 1, wood
 	));
 
 	objects.push_back(new Polygon(
@@ -78,15 +82,15 @@ void drawWall(float size) {
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		7, 0, 0, 1
+		40, 0, 0, 1, wood
 	));
 
 	objects.push_back(new Polygon(
-		p1,p5,p6,
+		p1,p6,p5,
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		7, 0, 0, 1
+		40, 0, 0, 1, wood
 	));
 
 	objects.push_back(new Polygon(
@@ -94,39 +98,39 @@ void drawWall(float size) {
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		7, 0.5, 0, 1
+		40, 0.2, 0, 1, wood
 	));
 
 	objects.push_back(new Polygon(
-		p1,p7,p2,
+		p1,p2,p7,
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		7, 0.5, 0, 1
+		40, 0.2, 0, 1, wood
 	));
 
 	objects.push_back(new Polygon(
-		p8,p2,p3,
+		p8,p3,p2,
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		7, 0, 0, 1
+		40, 0, 0, 1, wood
 	));
 
 	objects.push_back(new Polygon(
 		p8,p3,p4,
 		jhm::vector(0.05, 0.05, 0.05),
-		jhm::vector(0.5, 0.5, 0.5),
-		jhm::vector(0.7, 0.7, 0.7),
-		7, 0, 0, 1
+		jhm::vector(0.5, 0.5, 0.3),
+		jhm::vector(0.7, 0.7, 0.5),
+		40, 0, 0, 1, wood
 	));
 
 	objects.push_back(new Polygon(
-		p8,p4,p5,
+		p8,p5,p4,
 		jhm::vector(0.05, 0.05, 0.05),
-		jhm::vector(0.5, 0.5, 0.5),
-		jhm::vector(0.7, 0.7, 0.7),
-		7, 0, 0, 1
+		jhm::vector(0.5, 0.5, 0.3),
+		jhm::vector(0.7, 0.7, 0.5),
+		40, 0, 0, 1, wood
 	));
 
 	// objects.push_back(new Polygon(
@@ -150,7 +154,7 @@ void drawWall(float size) {
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		7, 0, 0, 1
+		40, 0, 0, 1, wood
 	));
 }
 
@@ -207,18 +211,6 @@ void drawCube(float size,
 	));
 
 	objects.push_back(new Polygon(
-		p1,p6,p7,
-		ka,kd,ks,kn,
-		reflectivity,transparency,ns
-	));
-
-	objects.push_back(new Polygon(
-		p1,p7,p2,
-		ka,kd,ks,kn,
-		reflectivity,transparency,ns
-	));
-
-	objects.push_back(new Polygon(
 		p8,p2,p3,
 		ka,kd,ks,kn,
 		reflectivity,transparency,ns
@@ -256,6 +248,7 @@ void drawCube(float size,
 }
 
 void draw() {
+
 	drawWall(600);
 	drawCube(100,
 		jhm::vector(-500,-300,100),
@@ -265,6 +258,17 @@ void draw() {
 		40, 0, 0, 1);
 
 	//light source
+
+	//color ball
+	Texture* colorball = new Texture("color.bmp");
+	objects.push_back(new Sphere(
+		jhm::position(350,0,0),
+		100,
+		jhm::vector(0.05, 0.05, 0.05),
+		jhm::vector(0.5, 0.5, 0.5),
+		jhm::vector(0.7, 0.7, 0.7),
+		30, 0, 0, 1, colorball
+	));
 
 	//ruby sphere
 	objects.push_back(new Sphere(
@@ -283,12 +287,12 @@ void draw() {
 		jhm::vector(0.02, 0.17, 0.02),
 		jhm::vector(0.07, 0.61, 0.07),
 		jhm::vector(0.63, 0.73, 0.63),
-		60, 0.3, 0, 1
+		60, 0.0, 0, 1
 	));
 
 	//mirror sphere
 	objects.push_back(new Sphere(
-		jhm::position(-200,-200,-300),
+		jhm::position(-350,-100,-300),
 		100,
 		jhm::vector(0.25, 0.20, 0.20),
 		jhm::vector(1, 0.83, 0.83),
@@ -306,15 +310,20 @@ void draw() {
 		8, 0, 1.0, 1.6
 	));
 
-	// bronze fish
-  // Model* model = new Model("data.txt", 2, 1.0,
-	// jhm::vector(0.21, 0.13, 0.05),
-	// jhm::vector(0.71, 0.43, 0.18),
-	// jhm::vector(0.39, 0.27, 0.17),
-	// 60, 0, 0);
-	// model->stack_Surface_stripe(1.0, 1.0, 1.0, 1.0, 1.0, 102./255, 0.0, 1.0);
-	// model->tree.buildBSPtree();
-	// objects.push_back(model);
+	//gold fish
+  Model* model = new Model("data.txt", 2, 1.0,
+	jhm::vector(0,0,0), 1,
+	jhm::vector(0.33, 0.22, 0.02),
+	jhm::vector(0.78, 0.45, 0.11),
+	jhm::vector(0.99, 0.94, 0.80),
+	20, 0, 0, 1);
+	//
+	//
+	// char objname[] = "teapot.obj";
+	// ObjParser parser = ObjParser(objname, jhm::vector(0,0,-500), 50, model->tree);
+	model->stack_Surface_stripe(1.0, 1.0, 1.0, 1.0, 1.0, 102./255, 0.0, 1.0);
+	model->tree.buildBSPtree();
+	objects.push_back(model);
 }
 
 jhm::vector getRayVector(int x_, int y_) {
@@ -405,6 +414,7 @@ jhm::vector trace(jhm::position ori, jhm::vector dir, int depth) {
   //diffuse color
 	else if (1-object->reflectivity-object->transparency > 0)
 	{
+
 		jhm::vector shadowRayDir = (lightPosition - pHit).normalize();
 
 		index = findNearestObject(pHit, shadowRayDir);
@@ -421,6 +431,8 @@ jhm::vector trace(jhm::position ori, jhm::vector dir, int depth) {
 		}
 
 		jhm::vector color = object->ka;
+		if(object->texture) color = object->getTextureColor(pHit);
+
 		jhm::vector L = (lightPosition-pHit).normalize();
 		jhm::vector R = N * (2 * (L%N)) - L;
 		R = R.normalize();
@@ -499,8 +511,6 @@ void delete_all() {
 }
 
 int main(int argc, char **argv) {
-	// char filename[] = "wood.jpeg";
-	// Texture texture = Texture(filename);
   draw(); // draw and stack triangles
 	printf("start rendering...\n");
   render();

@@ -30,7 +30,7 @@ public:
   );
 
   void traversal(jhm::position eye);
-  void findFirstIntersection(jhm::position ori, jhm::vector vec, Triangle &triangle, jhm::position &intersection, bool &find);
+  void findFirstIntersection(jhm::position ori, jhm::vector vec, Triangle &triangle, jhm::position &intersection, jhm::vector &pv, bool &find);
 };
 
 #endif

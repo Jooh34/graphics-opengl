@@ -1,7 +1,10 @@
 #include "Polygon.h"
 
-Polygon :: Polygon(jhm::position p1, jhm::position p2, jhm::position p3, jhm::vector ka, jhm::vector kd, jhm::vector ks, float kn, float reflectivity, float transparency, float n)
- : Object(ka, kd, ks, kn, reflectivity, transparency, n)
+Polygon :: Polygon(){}
+
+Polygon :: Polygon(jhm::position p1, jhm::position p2, jhm::position p3, jhm::vector ka, jhm::vector kd, jhm::vector ks, float kn,
+   float reflectivity, float transparency, float n, Texture* texture)
+ : Object(ka, kd, ks, kn, reflectivity, transparency, n, texture)
 {
 	this->p1 = p1;
 	this->p2 = p2;
@@ -46,4 +49,20 @@ bool Polygon :: intersect(jhm::position ori, jhm::vector dir, jhm::position &pHi
     return true;
   }
   else return false;
+}
+
+jhm::vector Polygon :: getTextureColor(jhm::position pHit) {
+  jhm::vector w_vec = p1-p2;
+  jhm::vector h_vec = p3-p2;
+
+  jhm::vector P = pHit-p2;
+  float l = P.length();
+
+  float cos_w = (P%w_vec)/(l*w_vec.length());
+  float cos_h = (P%h_vec)/(l*h_vec.length());
+
+  float u = (l * cos_w) / w_vec.length();
+  float v = (l * cos_h) / h_vec.length();
+
+  return texture->getTextureColor(u,v);
 }

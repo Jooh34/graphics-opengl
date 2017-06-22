@@ -1,6 +1,8 @@
 #include "BSPtree.h"
 
-BSPtree :: BSPtree(){}
+BSPtree :: BSPtree(){
+  triangles.clear();
+}
 
 void BSPtree :: add(Triangle t) {
   triangles.push_back(t);

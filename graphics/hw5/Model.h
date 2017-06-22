@@ -16,6 +16,7 @@
 #include "Triangle.h"
 #include "BSPtree.h"
 #include "Object.h"
+#include "Texture.h"
 
 class Model : public Object
 {
@@ -30,9 +31,15 @@ public:
   int nPoint;
   float alpha;
 
+  jhm::vector translation;
+  float scale;
+
   BSPtree tree;
 
-  Model(std::string fileName, int nPoint, int alpha, jhm::vector ka, jhm::vector kd, jhm::vector ks, float kn, float reflectivity, float transparency, float n);
+  Model(std::string fileName, int nPoint, int alpha,
+    jhm::vector translation, float scale,
+    jhm::vector ka, jhm::vector kd, jhm::vector ks, float kn,
+     float reflectivity, float transparency, float n, Texture* texture = NULL);
   void setNumPoint(int nPoint);
   void setAlpha(float alpha);
 
@@ -85,6 +92,7 @@ public:
   );
 
   void draw_BSPdepthOrder(jhm::position eye);
+  jhm::vector getTextureColor(jhm::position pHit);
   bool intersect(jhm::position ori, jhm::vector dir, jhm::position &pHit, jhm::vector &pv);
 };
 

@@ -30,7 +30,7 @@ Triangle :: Triangle (
   jhm::vector t1 = p[1]-p[0];
   jhm::vector t2 = p[2]-p[0];
   a = t1 * t2;
-  a.normalize();
+  a = a.normalize();
   b = -(a%p1);
 
   this->pv = a;
@@ -42,7 +42,7 @@ float Triangle :: getArea() {
 }
 
 float Triangle :: getPlane(jhm::position x) {
-  return (a%x) + b;
+  return (pv%x) + b;
 }
 
 void Triangle :: draw() {
@@ -62,7 +62,7 @@ void Triangle :: draw() {
 }
 
 float Triangle :: getDistance(jhm::position x) {
-  float d = abs((a%x)+b / a.length());
+  float d = abs((pv%x)+b / pv.length());
   if(d ==0) d = 0.01; // approximate to 0
   return d;
 }
@@ -71,14 +71,11 @@ jhm::position Triangle :: addPos(jhm::position a, jhm::position b) {
   return jhm::position(a[0]+b[0], a[1]+b[1], a[2]+b[2]);
 }
 
-bool Triangle :: hasIntersection(jhm::position ori, jhm::vector dir, jhm::position &intersection)
-{
-  // printf("v1 : (%lf,%lf,%lf)\n", p[0][0], p[0][1], p[0][2]);
-  // printf("v2 : (%lf,%lf,%lf)\n", p[1][0], p[1][1], p[1][2]);
-  // printf("v3 : (%lf,%lf,%lf)\n", p[2][0], p[2][1], p[2][2]);
-  // printf("ori : (%lf,%lf,%lf) dir : (%lf,%lf,%lf)\n", ori[0],ori[1],ori[2], dir[0],dir[1],dir[2]);
+bool Triangle :: hasIntersection(jhm::position ori, jhm::vector dir, jhm::position &pHit, jhm::vector &pv) {
   jhm::vector e1,e2,h,s,q;
   float a,f,u,v;
+
+  jhm::vector N = this->a;
 
   e1 = p[1]-p[0];
   e2 = p[2]-p[0];
@@ -102,7 +99,9 @@ bool Triangle :: hasIntersection(jhm::position ori, jhm::vector dir, jhm::positi
 
   if(t>EPSILON) {
     jhm::position temp = addPos(addPos(p[0]*(1-u-v), p[1]*u), p[2]*v);
-    intersection = temp;
+    pHit = temp;
+    if(N%dir > 0) pv = -N;
+    else pv = N;
     return true;
   }
   else return false;

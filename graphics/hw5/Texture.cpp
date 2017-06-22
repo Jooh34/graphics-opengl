@@ -1,41 +1,19 @@
 #include "Texture.h"
 
 Texture :: Texture (const char* filename) {
-  int i;
-  FILE* f = fopen(filename, "rb");
+  bmp.ReadFromFile(filename);
+  width = bmp.TellWidth();
+  height = bmp.TellHeight();
+}
 
-  if(f == NULL)
-    throw "Argument Exception";
+jhm::vector Texture :: getTextureColor(float u, float v) {
+  int x = floor((width * u)+0.5);
+  int y = floor((height * v)+0.5);
 
-  unsigned char info[54];
-  fread(info, sizeof(unsigned char), 54, f); // read the 54-byte header
+  RGBApixel *temp = bmp(x, y);
+  jhm::vector color(temp->Red / 255.0,
+    temp->Green / 255.0,
+    temp->Blue / 255.0);
 
-  // extract image height and width from header
-  int width = *(int*)&info[18];
-  int height = *(int*)&info[22];
-
-  cout << endl;
-  cout << "  Name: " << filename << endl;
-  cout << " Width: " << width << endl;
-  cout << "Height: " << height << endl;
-
-  int row_padded = (width*3 + 3) & (~3);
-  unsigned char* data = new unsigned char[row_padded];
-  unsigned char tmp;
-
-  for(int i = 0; i < height; i++)
-  {
-      fread(data, sizeof(unsigned char), row_padded, f);
-      for(int j = 0; j < width*3; j += 3)
-      {
-          // Convert (B, G, R) to (R, G, B)
-          tmp = data[j];
-          data[j] = data[j+2];
-          data[j+2] = tmp;
-
-          cout << "R: "<< (int)data[j] << " G: " << (int)data[j+1]<< " B: " << (int)data[j+2]<< endl;
-      }
-  }
-
-  fclose(f);
+  return color;
 }

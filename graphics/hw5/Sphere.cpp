@@ -1,7 +1,8 @@
 #include "Sphere.h"
 
-Sphere :: Sphere(jhm::position o, float r, jhm::vector ka, jhm::vector kd, jhm::vector ks, float kn, float reflectivity, float transparency, float n)
- : Object(ka, kd, ks, kn, reflectivity, transparency, n)
+Sphere :: Sphere(jhm::position o, float r, jhm::vector ka, jhm::vector kd, jhm::vector ks, float kn,
+   float reflectivity, float transparency, float n, Texture* texture)
+ : Object(ka, kd, ks, kn, reflectivity, transparency, n, texture)
 {
 	this->o = o;
 	this->r = r;
@@ -33,4 +34,15 @@ bool Sphere :: intersect(jhm::position ori, jhm::vector dir, jhm::position &pHit
 			return true;
 		}
 	}
+}
+
+jhm::vector Sphere :: getTextureColor(jhm::position pHit) {
+
+  jhm::vector point = o-pHit;
+
+  float y_len = sqrt(point[0] * point[0] + point[2] * point[2]);
+  float phi = atan2(y_len, point[1]);
+  float theta = atan2(-point[2], point[0]) + M_PI;
+
+  return texture->getTextureColor(phi / M_PI, theta / (2 * M_PI));
 }

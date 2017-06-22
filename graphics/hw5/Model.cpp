@@ -1,11 +1,16 @@
 #include "Model.h"
 
 
-Model :: Model(std::string fileName, int nPoint, int alpha, jhm::vector ka, jhm::vector kd, jhm::vector ks, float kn, float reflectivity, float transparency, float n)
-: Object(ka, kd, ks, n, reflectivity, transparency, n)
+Model :: Model(std::string fileName, int nPoint, int alpha,
+  jhm::vector translation, float scale,
+  jhm::vector ka, jhm::vector kd, jhm::vector ks, float kn,
+   float reflectivity, float transparency, float n, Texture* texture)
+: Object(ka, kd, ks, n, reflectivity, transparency, n, texture)
 {
   this->nPoint = nPoint;
   this->alpha = alpha;
+  this->translation = translation;
+  this->scale = scale;
 
   ifstream fileopen;
   fileopen.open(fileName.c_str());
@@ -493,20 +498,20 @@ void Model :: stack_SurfaceBetweenCrossSection (
         }
 
         if(j==0) {
-          prev_p = curve2.at(j);
-          p = curve3.at(j);
+          prev_p = curve2.at(j)*scale + translation;
+          p = curve3.at(j)*scale + translation;
           prev_prev_v = normal_2;
           prev_v = normal_3;
         }
         else {
           prev_prev_p = prev_p;
           prev_p = p;
-          p = curve2.at(j);
+          p = curve2.at(j)*scale + translation;
           Triangle t1(prev_prev_p, prev_p, p, prev_prev_v, prev_v, normal_2, R, G, B, alpha);
 
           prev_prev_p = prev_p;
           prev_p = p;
-          p = curve3.at(j);
+          p = curve3.at(j)*scale + translation;
           Triangle t2(prev_prev_p, prev_p, p, prev_v, normal_2, normal_3, R, G, B, alpha);
 
           prev_prev_v = normal_2;
@@ -529,11 +534,11 @@ void Model :: draw_BSPdepthOrder(jhm::position eye)
 bool Model :: intersect(jhm::position ori, jhm::vector dir, jhm::position &pHit, jhm::vector &pv) {
   bool find = false;
   Triangle triangle;
-  tree.root->findFirstIntersection(ori, dir, triangle, pHit, find);
+  tree.root->findFirstIntersection(ori, dir, triangle, pHit, pv, find);
 
-  if(find) {
-    if(triangle.pv % dir > 0) pv = -triangle.pv;
-    else pv = triangle.pv;
-  }
   return find;
+}
+
+jhm::vector Model :: getTextureColor(jhm::position pHit) {
+  return jhm::vector(0,0,0);
 }

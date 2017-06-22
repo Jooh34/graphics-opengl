@@ -11,15 +11,17 @@ Node :: Node(std::vector<Triangle> triangles)
 Triangle Node :: findBiggestTriangle() {
 
   float max = 0;
-  int index;
+  int index = 0;
 
   for(int i=0; i<triangles.size(); i++) {
     float a = triangles.at(i).getArea();
+    Triangle t = triangles.at(i);
     if(a>max) {
       max=a;
       index = i;
     }
   }
+  printf("%d\n", index) ;
   return triangles.at(index);
 }
 
@@ -262,7 +264,7 @@ void Node :: traversal(jhm::position eye)
   }
 }
 
-void Node :: findFirstIntersection(jhm::position ori, jhm::vector vec, Triangle &triangle, jhm::position &intersection, bool &find)
+void Node :: findFirstIntersection(jhm::position ori, jhm::vector vec, Triangle &triangle, jhm::position &intersection, jhm::vector &pv, bool &find)
 {
   Node* back;
   Node* front;
@@ -279,20 +281,29 @@ void Node :: findFirstIntersection(jhm::position ori, jhm::vector vec, Triangle 
   }
 
   if(front != NULL) {
-    front->findFirstIntersection(ori, vec, triangle, intersection, find);
+    front->findFirstIntersection(ori, vec, triangle, intersection, pv, find);
     if(find) return; // found
   }
 
+  int min_i = 0;
+  float min = 9999999;
   for(int i=0; i<middle.size(); i++) { // check if it has intersection with vec
-    if(middle.at(i).hasIntersection(ori, vec, intersection)) {
-      find = true;
-      triangle = middle.at(i);
-      return;
+    if(middle.at(i).hasIntersection(ori, vec, intersection, pv)) {
+      float d = (ori-intersection).length();
+      if(d < min) {
+        min = d;
+        min_i = i;
+        find = true;
+      }
     }
+  }
+  if(find) {
+    middle.at(min_i).hasIntersection(ori, vec, intersection, pv);
+    return;
   }
 
   if(back) {
-    back->findFirstIntersection(ori, vec, triangle, intersection, find);
+    back->findFirstIntersection(ori, vec, triangle, intersection, pv, find);
     if(find) return; // found
   }
 }

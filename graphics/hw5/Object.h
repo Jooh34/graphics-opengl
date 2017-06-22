@@ -7,6 +7,7 @@
 #include <GL/freeglut.h>
 #include <vector>
 #include "mathclass/include/mathclass.h"
+#include "Texture.h"
 
 class Object
 {
@@ -19,9 +20,14 @@ public:
 	float transparency;
   float n;
 
-	Object(jhm::vector ka, jhm::vector kd, jhm::vector ks, float kn, float reflectivity, float transparency, float n);
+  Texture* texture;
+
+  Object();
+	Object(jhm::vector ka, jhm::vector kd, jhm::vector ks, float kn,
+     float reflectivity, float transparency, float n, Texture* texture = NULL);
 
   virtual bool intersect(jhm::position ori, jhm::vector dir, jhm::position &pHit, jhm::vector &pv) = 0;
+  virtual jhm::vector getTextureColor(jhm::position pHit) = 0;
 };
 
 #endif
