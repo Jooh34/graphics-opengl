@@ -12,6 +12,14 @@ void RotationManager :: setRotate(int dir) {
   this->dir = dir;
   rotating = true;
   timer = 9;
+  if(!solving) {
+    if(!history.empty() && history.top() == reverse(dir)) {
+      history.pop();
+    }
+    else {
+      history.push(dir);
+    }
+  }
 }
 
 void RotationManager :: rotate() {
@@ -472,4 +480,22 @@ void RotationManager :: rotate_Bi() {
 	}
 
   TP_list.at(4).rotate_Z();
+}
+
+int* RotationManager :: getSolvingFormula(int &size) {
+  size = history.size();
+  int *arr = new int[size];
+  for (int i = 0; i < size; i++) {
+    arr[i] = reverse(history.top());
+    history.pop();
+  }
+  solving = true;
+  return arr;
+}
+
+int RotationManager :: reverse(int dir) {
+  if(dir % 2 == 0)
+    return dir+1;
+  else
+    return dir-1;
 }

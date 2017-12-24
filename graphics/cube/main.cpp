@@ -14,6 +14,7 @@
 #include "CornerPiece.h"
 #include "CenterPiece.h"
 #include "RotationManager.h"
+#include "Formula.h"
 
 using namespace std;
 
@@ -67,6 +68,9 @@ vector<CenterPiece> TP_list;
 
 RotationManager rotManager = RotationManager(EP_list, CP_list, TP_list);
 
+int f_idx = 0;
+int f_size = 0;
+const int *f;
 // ------------------------------
 // variables for views
 // ------------------------------
@@ -253,6 +257,16 @@ void display() {
 
 	glBegin(GL_QUADS);
 
+	if(!rotManager.rotating) {
+		if(f_idx>0) {
+			rotManager.setRotate(f[f_size-f_idx]);
+			f_idx--;
+		}
+		else {
+			rotManager.solving = false;
+		}
+	}
+
 	if(rotManager.rotating) {
 		rotManager.rotate();
 		rotManager.timer--;
@@ -368,6 +382,15 @@ void keyboard(unsigned char key, int x, int y) {
 		}
 		break;
 
+	case 112: //p : apply formula key
+		f = Formula::showManual(f_size);
+		f_idx = f_size;
+		break;
+
+	case 32: // space : solve rubik's cube by reversing history
+		f = rotManager.getSolvingFormula(f_size);
+		f_idx = f_size;
+		break;
 	// case 99:
 	// 	controlButton = !controlButton;
 	// 	if(controlButton == false) {

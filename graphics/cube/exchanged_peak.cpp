@@ -14,6 +14,7 @@
 #include "CornerPiece.h"
 #include "CenterPiece.h"
 #include "RotationManager.h"
+#include "Formula.h"
 
 using namespace std;
 

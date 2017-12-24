@@ -6,6 +6,7 @@
 #include <GL/freeglut.h>
 #include <vector>
 #include "mathclass/include/mathclass.h"
+#include <stack>
 
 #include "EdgePiece.h"
 #include "CornerPiece.h"
@@ -64,7 +65,11 @@ public:
   bool rotating;
   int dir;
 
+  stack<int> history;
+  bool solving;
+  
   RotationManager(vector<EdgePiece>& EP_list, vector<CornerPiece>& CP_list, vector<CenterPiece>& TP_list);
+
   void setRotate(int dir);
   void rotate();
   void rotate_U();
@@ -79,6 +84,9 @@ public:
   void rotate_Fi();
   void rotate_B();
   void rotate_Bi();
+
+  int* getSolvingFormula(int &size);
+  int reverse (int dir);
 };
 
 #endif
