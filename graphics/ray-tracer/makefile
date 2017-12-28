@@ -18,3 +18,6 @@ make:
 	g++ -c EasyBMP.cpp -lm -lGL -lGLU -lglut -L lib -l mathclass
 
 	g++ main.o Object.o Sphere.o Polygon.o Texture.o Model.o Node.o BSPtree.o Triangle.o BSpline_2D.o CatmullRom_2D.o TransformManager.o CrossSection.o ObjParser.o EasyBMP.o -lm -lGL -lGLU -lglut -L lib -l mathclass -o main
+
+clean:
+	rm -f *.o

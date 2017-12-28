@@ -23,3 +23,6 @@ make:
 	g++ app1.o Trackball.o CrossSection.o Model.o BSpline_2D.o CatmullRom_2D.o TransformManager.o Material.o Cube.o Triangle.o BSPtree.o Node.o -lm -lGL -lGLU -lglut -L lib -l mathclass -o app1
 	g++ app2.o Trackball.o CrossSection.o Model.o BSpline_2D.o CatmullRom_2D.o TransformManager.o Material.o Cube.o Triangle.o BSPtree.o Node.o -lm -lGL -lGLU -lglut -L lib -l mathclass -o app2
 	g++ app3.o Trackball.o CrossSection.o Model.o BSpline_2D.o CatmullRom_2D.o TransformManager.o Material.o Cube.o Triangle.o BSPtree.o Node.o -lm -lGL -lGLU -lglut -L lib -l mathclass -o app3
+
+clean:
+	rm -f *.o

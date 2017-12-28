@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/test_matrix.dir/test_matrix.cpp.o  -o test_matrix  -L/home/jooh/graphics/mathclass/examples/../build -rdynamic -lmathclass -Wl,-rpath,/home/jooh/graphics/mathclass/examples/../build 
