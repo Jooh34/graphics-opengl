@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "mathclass/include/mathclass.h"
 
@@ -28,18 +29,20 @@ using namespace std;
 // Temp light value
 //---------------------
 
-jhm::position lightPosition = jhm::position(0.0f, 200.0f, 400.0f);
+jhm::position lightPosition = jhm::position(-200.0f, 800.0f, 0.0f);
+float lightRadius = 200;
+int shadowSample = 50;
 //---------------------
 // variables for image
 //---------------------
 
 int MAX_DEPTH = 5;
-float zoom = 12;
+float zoom = 60;
 
-int w = 1280;
-int h = 720;
+int w = 2480;
+int h = 1920;
 
-jhm::position eye(0.0f, 0.0f, 1500.0f);
+jhm::position eye(0.0f, 1600.0f, 2800.0f);
 jhm::position ori(0.0f, 0.0f, 0.0f);
 float vp_D = 80.0f; // distance of view plane ( eye <-> viewPlane)
 
@@ -49,24 +52,25 @@ std::vector<Object*> objects;
 ////////////////////////
 
 void drawWall(float size) {
-	float height = size-200;
+	float height = 400;
 	jhm::position p1(-size, -height, -size);
 	jhm::position p2(size, -height, -size);
-	jhm::position p3(size, height, -size);
-	jhm::position p4(-size, height, -size);
-	jhm::position p5(-size, height, size);
+	jhm::position p3(size, 2*size-height, -size);
+	jhm::position p4(-size, 2*size-height, -size);
+	jhm::position p5(-size, 2*size-height, size);
 	jhm::position p6(-size, -height, size);
 	jhm::position p7(size, -height, size);
-	jhm::position p8(size, height, size);
+	jhm::position p8(size, 2*size-height, size);
 
 	Texture* wood = new Texture("wood.bmp");
+	Texture* check = new Texture("check.bmp");
 
 	objects.push_back(new Polygon(
 		p1,p2,p3,
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		40, 0, 0, 1, wood
+		40, 0, 0, 1, check
 	));
 
 	objects.push_back(new Polygon(
@@ -74,7 +78,7 @@ void drawWall(float size) {
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		40, 0, 0, 1, wood
+		40, 0, 0, 1, check
 	));
 
 	objects.push_back(new Polygon(
@@ -82,7 +86,7 @@ void drawWall(float size) {
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		40, 0, 0, 1, wood
+		40, 0, 0, 1, check
 	));
 
 	objects.push_back(new Polygon(
@@ -90,7 +94,7 @@ void drawWall(float size) {
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		40, 0, 0, 1, wood
+		40, 0, 0, 1, check
 	));
 
 	objects.push_back(new Polygon(
@@ -98,7 +102,7 @@ void drawWall(float size) {
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		40, 0.2, 0, 1, wood
+		40, 0, 0, 1, wood
 	));
 
 	objects.push_back(new Polygon(
@@ -106,7 +110,7 @@ void drawWall(float size) {
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		40, 0.2, 0, 1, wood
+		40, 0, 0, 1, wood
 	));
 
 	objects.push_back(new Polygon(
@@ -114,24 +118,24 @@ void drawWall(float size) {
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		40, 0, 0, 1, wood
+		40, 0, 0, 1, check
 	));
 
-	objects.push_back(new Polygon(
-		p8,p3,p4,
-		jhm::vector(0.05, 0.05, 0.05),
-		jhm::vector(0.5, 0.5, 0.3),
-		jhm::vector(0.7, 0.7, 0.5),
-		40, 0, 0, 1, wood
-	));
-
-	objects.push_back(new Polygon(
-		p8,p5,p4,
-		jhm::vector(0.05, 0.05, 0.05),
-		jhm::vector(0.5, 0.5, 0.3),
-		jhm::vector(0.7, 0.7, 0.5),
-		40, 0, 0, 1, wood
-	));
+	// objects.push_back(new Polygon(
+	// 	p8,p3,p4,
+	// 	jhm::vector(0.05, 0.05, 0.05),
+	// 	jhm::vector(0.5, 0.5, 0.3),
+	// 	jhm::vector(0.7, 0.7, 0.5),
+	// 	40, 0, 0, 1, wood
+	// ));
+	//
+	// objects.push_back(new Polygon(
+	// 	p8,p5,p4,
+	// 	jhm::vector(0.05, 0.05, 0.05),
+	// 	jhm::vector(0.5, 0.5, 0.3),
+	// 	jhm::vector(0.7, 0.7, 0.5),
+	// 	40, 0, 0, 1, wood
+	// ));
 
 	// objects.push_back(new Polygon(
 	// 	p8,p5,p6,
@@ -154,7 +158,7 @@ void drawWall(float size) {
 		jhm::vector(0.05, 0.05, 0.05),
 		jhm::vector(0.5, 0.5, 0.5),
 		jhm::vector(0.7, 0.7, 0.7),
-		40, 0, 0, 1, wood
+		40, 0, 0, 1, check
 	));
 }
 
@@ -249,13 +253,13 @@ void drawCube(float size,
 
 void draw() {
 
-	drawWall(600);
-	drawCube(100,
-		jhm::vector(-500,-300,100),
-		jhm::vector(0.24,0.20,0.07),
-		jhm::vector(0.75,0.60,0.22),
-		jhm::vector(0.63,0.56,0.37),
-		40, 0, 0, 1);
+	drawWall(900);
+	// drawCube(100,
+	// 	jhm::vector(-500,-300,100),
+	// 	jhm::vector(0.24,0.20,0.07),
+	// 	jhm::vector(0.75,0.60,0.22),
+	// 	jhm::vector(0.63,0.56,0.37),
+	// 	40, 0, 0, 1);
 
 	//light source
 
@@ -272,58 +276,77 @@ void draw() {
 
 	//ruby sphere
 	objects.push_back(new Sphere(
-		jhm::position(0,-340,-300),
+		jhm::position(-150,-340,-0),
 		60,
 		jhm::vector(0.17, 0.011, 0.11),
 		jhm::vector(0.61, 0.04, 0.04),
 		jhm::vector(0.72, 0.62, 0.62),
-		60, 0.2, 0, 1
+		10, 0, 0, 0.5
 	));
 
 	//emerald sphere
 	objects.push_back(new Sphere(
-		jhm::position(150,-300,-300),
+		jhm::position(0,-320,-0),
 		80,
 		jhm::vector(0.02, 0.17, 0.02),
 		jhm::vector(0.07, 0.61, 0.07),
 		jhm::vector(0.63, 0.73, 0.63),
-		60, 0.0, 0, 1
+		10, 0, 0, 0.5
 	));
 
 	//mirror sphere
-	objects.push_back(new Sphere(
-		jhm::position(-350,-100,-300),
-		100,
-		jhm::vector(0.25, 0.20, 0.20),
-		jhm::vector(1, 0.83, 0.83),
-		jhm::vector(0.30, 0.30, 0.30),
-		8, 1.0, 0, 1
+	// objects.push_back(new Sphere(
+	// 	jhm::position(-350,-100,-300),
+	// 	100,
+	// 	jhm::vector(0.25, 0.20, 0.20),
+	// 	jhm::vector(1, 0.83, 0.83),
+	// 	jhm::vector(0.30, 0.30, 0.30),
+	// 	8, 1.0, 0, 1
+	// ));
+
+	//mirror
+	jhm::vector t = jhm::vector(0,0,0);
+	objects.push_back(new Polygon(
+		jhm::position(-350, -390, 100),
+		jhm::position(-50, -390, -400),
+		jhm::position(-50, 0, -400),
+		t, t, t, 30,
+		0.9,0,1
 	));
 
-	//glass sphere
+	objects.push_back(new Polygon(
+		jhm::position(-50, 0, -400),
+		jhm::position(-350, 0, 100),
+		jhm::position(-350, -390, 100),
+		t, t, t, 30,
+		0.9,0,1
+	));
+
+
+	// glass sphere
 	objects.push_back(new Sphere(
-		jhm::position(200,-200,300),
+		jhm::position(200,-150,100),
 		100,
-		jhm::vector(0.25, 0.20, 0.20),
-		jhm::vector(1, 0.83, 0.83),
-		jhm::vector(0.30, 0.30, 0.30),
-		8, 0, 1.0, 1.6
+		jhm::vector(0.17, 0.011, 0.11),
+		jhm::vector(0.61, 0.04, 0.04),
+		jhm::vector(0.72, 0.62, 0.62),
+		8, 0, 1, 1.6
 	));
 
 	//gold fish
-  Model* model = new Model("data.txt", 2, 1.0,
-	jhm::vector(0,0,0), 1,
-	jhm::vector(0.33, 0.22, 0.02),
-	jhm::vector(0.78, 0.45, 0.11),
-	jhm::vector(0.99, 0.94, 0.80),
-	20, 0, 0, 1);
+  // Model* model = new Model("data.txt", 2, 1.0,
+	// jhm::vector(0,0,0), 1,
+	// jhm::vector(0.33, 0.22, 0.02),
+	// jhm::vector(0.78, 0.45, 0.11),
+	// jhm::vector(0.99, 0.94, 0.80),
+	// 20, 0, 0, 1);
 	//
 	//
 	// char objname[] = "teapot.obj";
 	// ObjParser parser = ObjParser(objname, jhm::vector(0,0,-500), 50, model->tree);
-	model->stack_Surface_stripe(1.0, 1.0, 1.0, 1.0, 1.0, 102./255, 0.0, 1.0);
-	model->tree.buildBSPtree();
-	objects.push_back(model);
+	// model->stack_Surface_stripe(1.0, 1.0, 1.0, 1.0, 1.0, 102./255, 0.0, 1.0);
+	// model->tree.buildBSPtree();
+	// objects.push_back(model);
 }
 
 jhm::vector getRayVector(int x_, int y_) {
@@ -368,7 +391,7 @@ jhm::vector trace(jhm::position ori, jhm::vector dir, int depth) {
 	int index = findNearestObject(ori,dir);
 
   if(index == -1) { // background
-    return jhm::vector(0,0.6,0.6);
+    return jhm::vector(0.3,0.3,0.3);
   }
 
 	Object* object = objects.at(index);
@@ -414,24 +437,37 @@ jhm::vector trace(jhm::position ori, jhm::vector dir, int depth) {
   //diffuse color
 	else if (1-object->reflectivity-object->transparency > 0)
 	{
+		jhm::vector shadowRayVec = (lightPosition - pHit);
+		int shadowCount = 0;
 
-		jhm::vector shadowRayDir = (lightPosition - pHit).normalize();
+		for (int i=0; i<shadowSample; i++) { // soft shadow
+	    float e1 = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX/2)) - 1;
+	    float e2 = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX/2)) - 1;
+	    float e3 = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX/2)) - 1;
+	    float d = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX/lightRadius));
 
-		index = findNearestObject(pHit, shadowRayDir);
+	    jhm::vector randomVec = jhm::vector(e1, e2, e3);
+	    jhm::vector orth = (shadowRayVec * randomVec).normalize();
+	    jhm::vector randomRay = shadowRayVec + (d * orth);
 
-		if(index != -1) {
-			Object* block_object = objects.at(index);
-			jhm::position shadow_Hit;
-			jhm::vector temp;
-			block_object->intersect(pHit, shadowRayDir, shadow_Hit, temp);
+			index = findNearestObject(pHit, randomRay.normalize());
 
-			if((pHit-shadow_Hit).length() < (lightPosition - pHit).length()) { // Shadow
-				return jhm::vector(0.2,0.2,0.2);
-		  }
+			if(index != -1) {
+				Object* block_object = objects.at(index);
+				jhm::position shadow_Hit;
+				jhm::vector temp;
+				block_object->intersect(pHit, shadowRayVec.normalize(), shadow_Hit, temp);
+
+				if((pHit-shadow_Hit).length() < randomRay.length()) { // Shadow
+					shadowCount ++;
+			  }
+			}
 		}
 
 		jhm::vector color = object->ka;
 		if(object->texture) color = object->getTextureColor(pHit);
+
+		color = 0.2 * color + 0.8 * color * (shadowSample - shadowCount) / shadowSample;
 
 		jhm::vector L = (lightPosition-pHit).normalize();
 		jhm::vector R = N * (2 * (L%N)) - L;
@@ -511,6 +547,7 @@ void delete_all() {
 }
 
 int main(int argc, char **argv) {
+  srand((unsigned)time(NULL));
   draw(); // draw and stack triangles
 	printf("start rendering...\n");
   render();
