@@ -16,3 +16,6 @@ openGL project for computer graphics
 ### Spline curve implementation (CatMull-Rom, B-spline)
 <img width="300" alt="1" src="https://user-images.githubusercontent.com/15865928/209563471-ec734be3-759c-4113-9622-8b41b7d5bcdf.png">
 <img width="300" alt="0" src="https://user-images.githubusercontent.com/15865928/209563466-7b1e3847-32e3-4006-887d-d456e70aa7a9.png">
+
+## /stl
+### STL file generator
